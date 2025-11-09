@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plateforme Appels à Projets V3</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Sidebar quiz + radar + synthèse + wishlist -->
+  <div class="sidebar">
+    <h2>Diagnostic rapide</h2>
+    <div id="quiz-container">
+      <div id="question"></div>
+      <select id="reponse" multiple></select>
+      <button id="prevBtn">Précédent</button>
+      <button id="nextBtn">Suivant</button>
+      <div id="progress"></div>
+    </div>
+
+    <canvas id="radarChart" width="300" height="300"></canvas>
+    <div id="synthese"></div>
+
+    <button id="btnFiltrer">Afficher offres correspondant à mon profil</button>
+
+    <h3>Ma sélection</h3>
+    <div id="wishlist"></div>
+    <button id="btnExportPDF">Télécharger ma sélection (PDF)</button>
+    <button id="btnViderWishlist">Vider ma sélection</button>
+  </div>
+
+  <!-- Offres -->
+  <div class="offres" id="offres"></div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
