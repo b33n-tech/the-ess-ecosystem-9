@@ -5,11 +5,14 @@ let radarChart;
 let wishlist = [];
 
 const quizQuestions = [
-  {question: "Maturité du projet", options: ["Pas structuré", "Un peu structuré", "Bien structuré"], key: "maturite"},
-  {question: "Modèle économique défini ?", options: ["Non", "Quelques pistes", "Oui"], key: "modele_eco"},
-  {question: "Besoins (multi)", options: ["Financement","Accompagnement","Visibilité","Partenaires"], key: "besoins"},
-  {question: "Déjà bénéficié de dispositifs similaires ?", options: ["Non","Oui"], key: "deja"},
-  {question: "Quand avez-vous besoin de la solution ?", options: ["Plus tard","1-3 mois","Immédiat"], key: "urgence"}
+  {question:"Où en êtes-vous de votre projet aujourd’hui ?", options:["Je n’ai qu’une idée","Je teste déjà","Je suis lancé","Je cherche à grandir"], key:"stade_maturite", type:"single"},
+  {question:"Quel est votre principal besoin aujourd’hui ?", options:["Financement","Accompagnement","Outils","Ressources humaines","Réseau","Autre"], key:"type_besoin", type:"multi"},
+  {question:"Quelle est la nature principale de votre projet ?", options:["ESS","Tech","Culture","Éducation","Écologie","Inclusion","Autre"], key:"nature_projet", type:"single"},
+  {question:"Sous quelle forme existe votre projet aujourd’hui ?", options:["Aucune structure","Association","Entreprise","Coopérative","Autre"], key:"niveau_structuration", type:"single"},
+  {question:"Quand avez-vous besoin d’une solution concrète ?", options:["Dès maintenant","D’ici 1 mois","D’ici 3 mois","Plus tard"], key:"echeance", type:"single"},
+  {question:"Quel est votre objectif principal pour les 6 prochains mois ?", options:["Tester une idée","Trouver un financement","Structurer l’équipe","Lancer le projet","Développer l’activité"], key:"objectif", type:"single"},
+  {question:"Votre projet est-il déjà financé ou soutenu ?", options:["Oui","Non"], key:"deja_finance", type:"single"},
+  {question:"Où est basé votre projet ?", options:["National","Régional","Local","International"], key:"territoire", type:"single"}
 ];
 
 async function chargerData() {
@@ -46,6 +49,7 @@ function showQuestion() {
     if(answers[q.key] && answers[q.key].includes(o)) optionEl.selected = true;
     select.appendChild(optionEl);
   });
+  select.multiple = q.type==="multi";
   document.getElementById("progress").innerText = `Question ${currentQuestion+1} sur ${quizQuestions.length}`;
 }
 
@@ -55,9 +59,7 @@ document.getElementById("nextBtn").addEventListener("click", ()=>{
     currentQuestion++;
     showQuestion();
   } else {
-    const scores = calculerScores();
-    afficherRadar(scores);
-    genererSynthese(scores);
+    genererSynthese();
   }
 });
 
@@ -75,66 +77,39 @@ function saveAnswer(){
   answers[q.key] = Array.from(select.selectedOptions).map(o=>o.value);
 }
 
-function calculerScores(){
-  const scores = {structuration:0, modele_eco:0, financement:0, accompagnement:0, visibilite:0, partenaires:0};
-  // Maturité
-  if(answers.maturite){
-    scores.structuration = answers.maturite[0]==="Pas structuré"?0: answers.maturite[0]==="Un peu structuré"?5:10;
+function genererSynthese(){
+  let texte = "<h4>Synthèse rapide :</h4><ul>";
+  for(let k in answers){
+    texte+=`<li>${k}: ${answers[k].join(", ")}</li>`;
   }
-  // Modèle économique
-  if(answers.modele_eco){
-    scores.modele_eco = answers.modele_eco[0]==="Non"?2: answers.modele_eco[0]==="Quelques pistes"?6:10;
-  }
-  // Besoins
-  if(answers.besoins){
-    answers.besoins.forEach(b=>{
-      if(b==="Financement") scores.financement +=5;
-      if(b==="Accompagnement") scores.accompagnement +=5;
-      if(b==="Visibilité") scores.visibilite +=5;
-      if(b==="Partenaires") scores.partenaires +=5;
-    });
-  }
-  // Déjà bénéficié
-  if(answers.deja && answers.deja[0]==="Oui"){
-    scores.financement = Math.min(scores.financement,7);
-  }
-  // Urgence
-  if(answers.urgence){
-    const u = answers.urgence[0]==="Plus tard"?0: answers.urgence[0]==="1-3 mois"?1:2;
-    for(let k in scores) scores[k]+=u;
-  }
-  return scores;
+  texte+="</ul>";
+  document.getElementById("synthese").innerHTML=texte;
+  afficherRadar();
 }
 
-function afficherRadar(scores){
+function afficherRadar(){
+  const axes = ["stade_maturite","type_besoin","nature_projet","niveau_structuration","echeance"];
+  const valeurs = axes.map(a => answers[a] ? answers[a].length*2 : 0);
   const ctx = document.getElementById('radarChart').getContext('2d');
   const dataRadar = {
-    labels:Object.keys(scores),
-    datasets:[{label:"Diagnostic projet",data:Object.values(scores),fill:true,backgroundColor:"rgba(142,68,173,0.2)",borderColor:"rgba(142,68,173,1)",pointBackgroundColor:"rgba(142,68,173,1)"}]
+    labels: axes,
+    datasets:[{label:"Diagnostic projet",data:valeurs,fill:true,backgroundColor:"rgba(142,68,173,0.2)",borderColor:"rgba(142,68,173,1)",pointBackgroundColor:"rgba(142,68,173,1)"}]
   };
   if(radarChart) radarChart.destroy();
   radarChart = new Chart(ctx,{type:'radar',data:dataRadar});
 }
 
-function genererSynthese(scores){
-  let texte = "<h4>Synthèse rapide :</h4><ul>";
-  for(let k in scores){
-    if(scores[k]>7) texte+=`<li>${k}: ✅ point fort</li>`;
-    else if(scores[k]>=4) texte+=`<li>${k}: ⚠️ à consolider</li>`;
-    else texte+=`<li>${k}: ❌ faible</li>`;
-  }
-  texte+="</ul>";
-  document.getElementById("synthese").innerHTML=texte;
-}
-
-function filtrerOffres(scores){
+function filtrerOffres(){
   const all = [...data.ponctuels,...data.stables];
-  return all.filter(o => o.tags.some(tag => Object.keys(scores).includes(tag) && scores[tag]>=5));
+  const filtres = [];
+  for(let k in answers){
+    answers[k].forEach(v=>filtres.push(`${k}:${v}`));
+  }
+  return all.filter(o=>o.tags.some(t=>filtres.includes(t)));
 }
 
 document.getElementById("btnFiltrer").addEventListener("click", ()=>{
-  const scores = calculerScores();
-  const filtres = filtrerOffres(scores);
+  const filtres = filtrerOffres();
   afficherOffres(filtres);
 });
 
