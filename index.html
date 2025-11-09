@@ -1,44 +1,80 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plateforme Appels à Projets V3</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-</head>
-<body>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #0d0d0d;
+  color: #fff;
+  margin: 0;
+}
 
-<div class="container">
+.container {
+  display: flex;
+  height: 100vh;
+  gap: 20px;
+  padding: 20px;
+}
 
-  <!-- Sidebar quiz + radar + synthèse + wishlist -->
-  <div class="sidebar">
-    <h2>Diagnostic rapide</h2>
-    <div id="quiz-container">
-      <div id="question"></div>
-      <select id="reponse" multiple></select>
-      <button id="prevBtn">Précédent</button>
-      <button id="nextBtn">Suivant</button>
-      <div id="progress"></div>
-    </div>
+.sidebar {
+  flex: 1;
+  background: #2c003e;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
 
-    <canvas id="radarChart" width="300" height="300"></canvas>
-    <div id="synthese"></div>
+.offres {
+  flex: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  overflow-y: auto;
+}
 
-    <button id="btnFiltrer">Afficher offres correspondant à mon profil</button>
+.carte {
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
-    <h3>Ma sélection</h3>
-    <div id="wishlist"></div>
-    <button id="btnExportPDF">Télécharger ma sélection (PDF)</button>
-    <button id="btnViderWishlist">Vider ma sélection</button>
-  </div>
+.carte:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(142,68,173,0.7);
+}
 
-  <!-- Offres -->
-  <div class="offres" id="offres"></div>
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #8e44ad;
+  color: white;
+  cursor: pointer;
+  margin-top: 5px;
+}
 
-</div>
+button:hover {
+  background-color: #9b59b6;
+}
 
-<script src="script.js"></script>
-</body>
-</html>
+select {
+  width: 100%;
+  margin: 10px 0;
+  padding: 5px;
+  border-radius: 6px;
+  border: none;
+}
+
+#wishlist {
+  margin-top: 10px;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #9b59b6;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+#radarChart {
+  margin-top: 10px;
+}
