@@ -4,13 +4,13 @@
       "title": "Appel à projets Financement ESS",
       "deadline": "2025-12-31",
       "url": "https://exemple.com/financement",
-      "tags": ["financement", "structuration"]
+      "tags": ["stade_maturite:Je teste déjà","type_besoin:Financement","nature_projet:ESS"]
     },
     {
       "title": "Programme Visibilité Startups",
       "deadline": "2025-11-30",
       "url": "https://exemple.com/visibilite",
-      "tags": ["visibilite", "accompagnement"]
+      "tags": ["stade_maturite:Je suis lancé","type_besoin:Visibilité","nature_projet:Tech"]
     }
   ],
   "stables": [
@@ -18,14 +18,14 @@
       "title": "Accompagnement ESS",
       "contact": "contact@exemple.com",
       "url": "https://exemple.com/formulaire",
-      "tags": ["accompagnement", "partenaires"],
+      "tags": ["type_besoin:Accompagnement","nature_projet:ESS"],
       "description": "Programme permanent pour startups ESS"
     },
     {
       "title": "Programme Mentorat",
       "contact": "mentor@exemple.com",
       "url": "https://exemple.com/mentor",
-      "tags": ["accompagnement", "visibilite"],
+      "tags": ["type_besoin:Accompagnement","nature_projet:Tech"],
       "description": "Mentorat régulier pour structurer votre projet"
     }
   ]
